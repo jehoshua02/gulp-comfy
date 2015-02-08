@@ -36,10 +36,10 @@ module.exports = function () {
       if (module.watch) {
         var watchName = 'watch/' + name;
         watches.push(watchName);
-        (function (name, watch, task) { // closure to bind variables
+        (function (name, files, task) { // closure to bind variables
           gulp.task(name, [task], function () {
-            console.log(task + ' watching ' + watch);
-            gulp.watch(watch, [task]);
+            console.log(name + ' (' + files + ')');
+            gulp.watch(files, [task]);
           });
         })(watchName, module.watch, name);
       }

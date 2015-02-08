@@ -63,7 +63,7 @@ describe('gulp-comfy', function () {
     var task = gulp.tasks['watch/task3/a'];
 
     it('should say what is being watched and which task', function () {
-      task.fn.toString().indexOf("task + ' watching ' + watch").should.not.eql(-1);
+      task.fn.toString().indexOf("name + ' (' + files + ')'").should.not.eql(-1);
     });
   });
 
