@@ -7,5 +7,6 @@
 + [x] unit tests
 + [x] default task
 + [x] clean tasks
++ [x] README.md
 + [ ] code coverage report
-+ [ ] README.md
++ [ ] Travis-CI
