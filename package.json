@@ -15,5 +15,20 @@
   },
   "dependencies": {
     "del": "^1.1.1"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jehoshua02/gulp-comfy.git"
+  },
+  "keywords": [
+    "gulp",
+    "boilerplate"
+  ],
+  "bugs": {
+    "url": "https://github.com/jehoshua02/gulp-comfy/issues"
+  },
+  "homepage": "https://github.com/jehoshua02/gulp-comfy"
 }
