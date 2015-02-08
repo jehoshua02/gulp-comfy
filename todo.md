@@ -4,7 +4,8 @@
 + [x] get real fileNames
 + [x] watch aggregate
 + [x] individual watch tasks
-+ [ ] default task
-+ [ ] clean task
-+ [ ] unit tests
++ [x] unit tests
++ [x] default task
++ [x] clean tasks
++ [ ] code coverage report
 + [ ] README.md
