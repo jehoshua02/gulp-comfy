@@ -40,12 +40,12 @@ module.exports = {
 
 __Task Properties__
 
-+ `fn`, Function, Optional: The function to pass to `gulp.task()`.
-+ `deps`, Array, Optional: The array of task dependencies to pass to `gulp.task()`.
-+ `watch`, String|Array, Optional: A glob or array of globs to pass to
++ __`fn`, Function, Optional__: The function to pass to `gulp.task()`.
++ __`deps`, Array, Optional__: The array of task dependencies to pass to `gulp.task()`.
++ __`watch`, String|Array, Optional__: A glob or array of globs to pass to
 `gulp.watch()`. If specified a watch task will be defined automatically for this
 task with the name of the task prefixed with `watch/`.
-+ `clean`, String|Array, Optional: A glob or array of globs to pass to
++ __`clean`, String|Array, Optional__: A glob or array of globs to pass to
 [`del()`](https://www.npmjs.com/package/del). If specified a clean task will be
 defined automatically for this task with the name of the task prefixed with
 `clean/`.
@@ -66,7 +66,7 @@ tasks defined automatically.
 
 + `default`: Simply runs `watch`.
 + `watch`: Aggregates individual watch tasks into one watch task.
-+ `clean`: Aggregates individaul clean tasks into one clean task.
++ `clean`: Aggregates individual clean tasks into one clean task.
 
 
 ## Parent Tasks
