@@ -1,6 +1,7 @@
 {
   "name": "gulp-comfy",
   "version": "0.0.1",
+  "description": "Boilerplate to make gulp as comfy as possible.",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
