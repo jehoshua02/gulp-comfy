@@ -35,21 +35,23 @@ module.exports = function () {
 
       if (module.watch) {
         var watchName = 'watch/' + name;
-        gulp.task(watchName, [name], function () {
-          console.log('watch: ' + module.watch + ', task: ' + name);
-          gulp.watch(module.watch, [name]);
-        });
         watches.push(watchName);
+        (function (name, watch, task) { // closure to bind variables
+          gulp.task(name, [task], function () {
+            console.log(task + ' watching ' + watch);
+            gulp.watch(watch, [task]);
+          });
+        })(watchName, module.watch, name);
       }
 
       if (module.clean) {
         var cleanName = 'clean/' + name;
         cleans.push(cleanName);
-        gulp.task(cleanName, function (done) {
-          del(module.clean, function () {
-            done();
+        (function (name, files) { // closure to bind variables
+          gulp.task(name, function (done) {
+            del(files, function () { done(); });
           });
-        });
+        })(cleanName, module.clean);
       }
     }
   }
