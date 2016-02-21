@@ -27,6 +27,32 @@ One line `gulpfile.js`:
 require('gulp-comfy')();
 ```
 
+
+### Optional Configuration
+
+`gulpfile.js`:
+
+```javascript
+require('gulp-comfy')({
+    taskPath: '/gulp/tasks',    //path to the task directory
+    taskFileExt: 'js',          //file extention of task files
+    taskSeparator: '/',         //seperator to concatinate sub-tasks
+    cleanTaskName: 'clean',     //name of the master-clean task
+    watchTaskName: 'watch',     //name of the master-watch task
+    cleanTaskPrefix: 'clean/',  //prefix of discovered cleaner tasks
+    watchTaskPrefix: 'watch/'   //prefix of discovered watcher tasks
+});
+```
+__Avalible Options__
+
++ __`taskPath`, String, Optional__: The path of where gulp-comfy will look for Task files. `default: 'gulp/tasks'`.
++ __`taskFileExt`, String, Optional__: The file extension task files need to be included. (all other files will be ignored!) `default: 'js'`.
++ __`taskSeparator`, String, Optional__: The separator used to concatenated task names discovered in directories `default: '/'`.
++ __`cleanTaskName`, String, Optional__: The name of the main cleaner task `default: 'clean'`.
++ __`watchTaskName`, String, Optional__: The name of the main watcher task `default: 'watch'`.
++ __`cleanTaskPrefix`, String, Optional__: The prefix for discovered clean tasks. `default: 'clean/'`.
++ __`watchTaskPrefix`, String, Optional__: The prefix for discovered watch tasks. `default: 'watch/'`.
+
 ## Tasks
 
 Define tasks in separate files under `gulp/tasks`. Instead of calling

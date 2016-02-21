@@ -6,7 +6,12 @@ describe('gulp-comfy', function () {
   process.chdir(__dirname + '/fixtures');
   comfy({
     taskPath: '/gulp_tasks',
-    taskFileExt: 'jsx'
+    taskFileExt: 'jsx',
+    taskSeparator: ':',
+    watchTaskName: 'comfy-watch',
+    watchTaskPrefix: 'watch:',
+    cleanTaskName: 'comfy-clean',
+    cleanTaskPrefix: 'clean:'
   });
   comfy();
 
@@ -44,7 +49,13 @@ describe('gulp-comfy', function () {
         'task3/a', 'task3/b', 'task3/c', 'task3/foo'
       ]);
     });
+    it('should run all children tasks (optional seperator)', function () {
+      gulp.tasks['taskB'].dep.sort().should.eql([
+        'taskB:1'
+      ]);
+    });
   });
+
 
   it('should define default task', function () {
     gulp.tasks.should.have.property('default');
@@ -102,12 +113,13 @@ describe('gulp-comfy', function () {
       tasks.push(task);
     }
     tasks.sort().should.eql([
-      'clean', 'clean/task1', 'clean/task2',
+      'clean', 'clean/task1', 'clean/task2','clean:taskA',
+      'comfy-clean', 'comfy-watch',
       'default',
       'task1', 'task2', 'task3',
       'task3/a', 'task3/b', 'task3/c', 'task3/foo', 'task3/foo/bar',
-      'taskA',
-      'watch', 'watch/task3/a', 'watch/task3/b', 'watch/task3/c',
+      'taskA', 'taskB', 'taskB:1',
+      'watch', 'watch/task3/a', 'watch/task3/b', 'watch/task3/c', 'watch:taskA'
     ]);
   });
 
@@ -119,11 +131,36 @@ describe('gulp-comfy', function () {
           'taskA'
       );
     });
-    it('should only load tasks with the extension {taskFileExt:ext}', function() {
+    it('should only load tasks with the extension {taskFileExt:string}', function() {
       gulp.tasks.should.not.have.properties(
           'taskA_fake'
       );
-    })
+    });
+    it('should concatinate subtasks with {taskSeparator:string}', function() {
+      gulp.tasks.should.have.properties(
+          'taskB:1'
+      );
+    });
+    it('should use the right prefix for cleaners', function() {
+      gulp.tasks.should.have.properties(
+          'clean:taskA', 'clean/task1'
+      );
+    });
+    it('should use the right prefix for watchers', function() {
+      gulp.tasks.should.have.properties(
+          'watch:taskA', 'watch/task3/a'
+      );
+    });
+    it('should create a watcher task with the name of {watchTaskName}', function() {
+      gulp.tasks.should.have.properties(
+          'comfy-watch'
+      );
+    });
+    it('should create a cleaner task with the name of {cleanTaskName}', function() {
+      gulp.tasks.should.have.properties(
+          'comfy-clean'
+      );
+    });
   });
 
 });
