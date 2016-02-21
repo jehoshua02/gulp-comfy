@@ -2,9 +2,12 @@ var comfy = require('../');
 var gulp = require('gulp');
 var should = require('should');
 
-
 describe('gulp-comfy', function () {
   process.chdir(__dirname + '/fixtures');
+  comfy({
+    taskPath: '/gulp_tasks',
+    taskFileExt: 'jsx'
+  });
   comfy();
 
   it('should load all tasks from gulp/tasks', function () {
@@ -103,7 +106,24 @@ describe('gulp-comfy', function () {
       'default',
       'task1', 'task2', 'task3',
       'task3/a', 'task3/b', 'task3/c', 'task3/foo', 'task3/foo/bar',
+      'taskA',
       'watch', 'watch/task3/a', 'watch/task3/b', 'watch/task3/c',
     ]);
   });
+
+  describe('special gulp-comfy configuration', function() {
+    process.chdir(__dirname + '/fixtures');
+
+    it('should load all tasks from a defined {taskPath:directory}', function () {
+      gulp.tasks.should.have.properties(
+          'taskA'
+      );
+    });
+    it('should only load tasks with the extension {taskFileExt:ext}', function() {
+      gulp.tasks.should.not.have.properties(
+          'taskA_fake'
+      );
+    })
+  });
+
 });
