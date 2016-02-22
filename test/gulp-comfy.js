@@ -88,7 +88,7 @@ describe('gulp-comfy', function () {
   describe('main watch task', function () {
     it('should run individual watch tasks', function () {
       gulp.tasks['watch'].dep.sort().should.eql([
-        'watch/task3/a', 'watch/task3/b', 'watch/task3/c'
+        'watch/task2', 'watch/task3'
       ]);
     });
   });
@@ -119,7 +119,7 @@ describe('gulp-comfy', function () {
       'task1', 'task2', 'task3',
       'task3/a', 'task3/b', 'task3/c', 'task3/foo', 'task3/foo/bar',
       'taskA', 'taskB', 'taskB:1',
-      'watch', 'watch/task3/a', 'watch/task3/b', 'watch/task3/c', 'watch:taskA'
+      'watch', 'watch/task2', 'watch/task3', 'watch/task3/a', 'watch/task3/b', 'watch/task3/c', 'watch:taskA'
     ]);
   });
 

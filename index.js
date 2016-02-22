@@ -29,31 +29,68 @@ module.exports = function (options) {
   const ROOT = process.cwd() + options.taskPath;
   const SEPARATOR = options.taskSeparator;
 
-  var queue = [ROOT];
-  var watches = [];
-  var cleans = [];
+  walkDirectory(null, ROOT);
 
-  while (queue.length > 0) {
-    var path = queue.pop();
+  function walkDirectory(parent,path) {
+    var node = {
+      name: path.replace(ROOT + '/', '').replace('/', SEPARATOR),
+      childTasks: [],
+      watches: [],
+      cleans:[]
+    };
 
-    if (fs.statSync(path).isDirectory()) {
-      addDirectory(path);
-    } else if(fs.statSync(path).isFile() && path.indexOf(FILE_EXT) == (path.length - FILE_EXT.length)) {
-      addFile(path);
+    fs.readdirSync(path).forEach(function(file) {
+      var filepath = path + '/' + file;
+
+      if(fs.statSync(filepath).isFile() && filepath.indexOf(FILE_EXT) == (filepath.length - FILE_EXT.length)) {
+        registerFile(node, filepath);
+      } else if (fs.statSync(filepath).isDirectory()) {
+        walkDirectory(node,filepath)
+      }
+    });
+
+    registerNode(node, parent);
+  }
+
+  function registerNode(node, parent) {
+    if(parent) {
+      if(node.childTasks.length > 0) {
+        gulp.task.apply(gulp, [node.name, node.childTasks]);
+        parent.childTasks.push(node.name);
+      }
+      if(node.watches.length > 0) {
+        gulp.task.apply(gulp, [options.watchTaskPrefix + node.name, node.watches]);
+        parent.watches.push(options.watchTaskPrefix + node.name);
+      }
+      if(node.cleans.length > 0) {
+        gulp.task.apply(gulp, [options.cleanTaskPrefix + node.name, node.cleans]);
+        parent.cleans.push(options.cleanTaskPrefix + node.name);
+      }
+
+    } else {
+      if(node.watches.length > 0) {
+        gulp.task.apply(gulp, [options.watchTaskName, node.watches]);
+      }
+      if(node.cleans.length > 0) {
+        gulp.task.apply(gulp, [options.cleanTaskName, node.cleans]);
+      }
     }
   }
 
-  function addFile(path) {
+  function registerFile(node, path) {
     var module = require(path);
     var name = path.substr(0, path.lastIndexOf('.' + FILE_EXT)).replace(ROOT + '/', '').replace('/', SEPARATOR);
     var args = [name];
+
     if (module.deps) { args.push(module.deps); }
     if (module.fn) { args.push(module.fn); }
     gulp.task.apply(gulp, args);
 
+    node.childTasks.push(name);
+
     if (module.watch) {
       var watchName = options.watchTaskPrefix + name;
-      watches.push(watchName);
+      node.watches.push(watchName);
       (function (name, files, task) { // closure to bind variables
         gulp.task(name, [task], function () {
           console.log(name + ' (' + files + ')');
@@ -64,7 +101,7 @@ module.exports = function (options) {
 
     if (module.clean) {
       var cleanName = options.cleanTaskPrefix + name;
-      cleans.push(cleanName);
+      node.cleans.push(cleanName);
       (function (name, files) { // closure to bind variables
         gulp.task(name, function (done) {
           del(files, function () { done(); });
@@ -73,34 +110,5 @@ module.exports = function (options) {
     }
   }
 
-  function addDirectory(path) {
-    var files = fs.readdirSync(path);
-
-    Array.prototype.push.apply(queue, files.map(function (file) {
-      return path + '/' + file;
-    }));
-
-    if (path !== ROOT) {
-      var name = path.replace(ROOT + '/', '').replace('/', SEPARATOR);
-      var deps = [];
-      files.forEach(function(file) {
-        if(fs.statSync(path + '/' + file).isDirectory()) {
-          deps.push(name + SEPARATOR + file);
-        }
-        if(file.lastIndexOf('.' + FILE_EXT) !== -1) {
-          deps.push(name + SEPARATOR + file.substr(0, file.lastIndexOf('.' + FILE_EXT)));
-        }
-      });
-      gulp.task(name, deps);
-    }
-  }
-
-  gulp.task(options.watchTaskName, watches);
-  gulp.task(options.cleanTaskName, cleans);
-
-  gulp.task('default', ['watch']);
-
-
-  //gulp.task('comfy:watch', watches);
-  //gulp.task('comfy:clean', cleans);
+  gulp.task('default', [options.watchTaskName]);
 };
