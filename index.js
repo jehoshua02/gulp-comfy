@@ -42,7 +42,7 @@ module.exports = function (options) {
     fs.readdirSync(path).forEach(function(file) {
       var filepath = path + '/' + file;
 
-      if(fs.statSync(filepath).isFile() && filepath.indexOf(FILE_EXT) == (filepath.length - FILE_EXT.length)) {
+      if(fs.statSync(filepath).isFile() && filepath.lastIndexOf(FILE_EXT) == (filepath.length - FILE_EXT.length)) {
         registerFile(node, filepath);
       } else if (fs.statSync(filepath).isDirectory()) {
         walkDirectory(node,filepath)
