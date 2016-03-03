@@ -1,6 +1,7 @@
-var comfy = require('../');
 var gulp = require('gulp');
 var should = require('should');
+
+var comfy = require('../');
 
 describe('gulp-comfy', function () {
   process.chdir(__dirname + '/fixtures');
@@ -88,7 +89,7 @@ describe('gulp-comfy', function () {
   describe('main watch task', function () {
     it('should run individual watch tasks', function () {
       gulp.tasks['watch'].dep.sort().should.eql([
-        'watch/task3/a', 'watch/task3/b', 'watch/task3/c'
+        'watch/task2', 'watch/task3'
       ]);
     });
   });
@@ -118,13 +119,12 @@ describe('gulp-comfy', function () {
       'default',
       'task1', 'task2', 'task3',
       'task3/a', 'task3/b', 'task3/c', 'task3/foo', 'task3/foo/bar',
-      'taskA', 'taskB', 'taskB:1',
-      'watch', 'watch/task3/a', 'watch/task3/b', 'watch/task3/c', 'watch:taskA'
+      'taskA', 'taskB', 'taskB:1', 'taskC_multi:0', 'taskC_multi:1', 'taskC_multi:named',
+      'watch', 'watch/task2', 'watch/task3','watch/task3/a', 'watch/task3/b', 'watch/task3/c', 'watch:taskA'
     ]);
   });
 
   describe('special gulp-comfy configuration', function() {
-    process.chdir(__dirname + '/fixtures');
 
     it('should load all tasks from a defined {taskPath:directory}', function () {
       gulp.tasks.should.have.properties(
@@ -163,4 +163,19 @@ describe('gulp-comfy', function () {
     });
   });
 
+  describe('advanced gulp-comfy features', function() {
+    process.chdir(__dirname + '/fixtures');
+
+    it('should multiply tasks in task-files that return an array', function () {
+      gulp.tasks.should.have.properties(
+        'taskC_multi:0','taskC_multi:1'
+      );
+    });
+    it('should multiply tasks in task-files and name them if a name is provided', function () {
+      gulp.tasks.should.have.properties(
+        'taskC_multi:named'
+      );
+    });
+
+  });
 });

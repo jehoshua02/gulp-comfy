@@ -3,5 +3,6 @@ module.exports = {
   fn: function () {
     // task 2
   },
-  clean: './dist/task2'
+  clean: './dist/task2',
+  watch: './src/a/**/*'
 };

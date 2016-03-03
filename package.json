@@ -13,8 +13,9 @@
     "should": "^4.6.5"
   },
   "dependencies": {
+    "del": "^1.1.1",
     "gulp": "^3.8.10",
-    "del": "^1.1.1"
+    "mootools": "^1.5.2"
   },
   "directories": {
     "test": "test"
