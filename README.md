@@ -1,4 +1,4 @@
-# Gulp Comfy [![Build Status](https://travis-ci.org/jehoshua02/gulp-comfy.svg)](https://travis-ci.org/jehoshua02/gulp-comfy)
+# Gulp Comfy [![Build Status](https://travis-ci.org/chozilla/gulp-comfy.svg?branch=master)](https://travis-ci.org/chozilla/gulp-comfy)
 
 Boilerplate to make gulp as comfy as possible.
 
