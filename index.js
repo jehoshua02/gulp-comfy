@@ -2,8 +2,6 @@ var gulp = require('gulp');
 var fs = require('fs');
 var del = require('del');
 
-var mootools = require('mootools');
-
 
 module.exports = function (options) {
   var defaultOptions = {
@@ -83,27 +81,35 @@ module.exports = function (options) {
     var module = require(path);
     var name = path.substr(0, path.lastIndexOf('.' + FILE_EXT)).replace(ROOT + '/', '').replace(/[/]/g, SEPARATOR);
 
-    if(typeOf(module) === 'array') {
-      module.forEach(function(task, i) {
-        if(task.name) {
-          createTask(task, node, name + SEPARATOR + task.name);
-        } else {
-          createTask(task, node, name + SEPARATOR + i);
-        }
-      });
+    if(module instanceof Array) {
+      registerTaskArray(module, node, name)
     } else {
       createTask(module, node, name);
     }
   }
 
+  function registerTaskArray(tasks, parent, name) {
+    var node = {
+      name: name,
+      childTasks: [],
+      watches: [],
+      cleans:[]
+    };
+    tasks.forEach(function(task, i) {
+      if(task.name) {
+        createTask(task, node, name + SEPARATOR + task.name);
+      } else {
+        createTask(task, node, name + SEPARATOR + i);
+      }
+    });
+    registerNode(node, parent);
+  }
+
+
   function createTask(module, node, name) {
     var args = [name];
 
     if (module.deps) {
-      //var deps = [];
-      //module.deps.forEach(function(dependency) {
-      //  deps.push(dependency.replace('SELF', name));
-      //});
       args.push(module.deps);
     }
 
@@ -133,8 +139,6 @@ module.exports = function (options) {
       })(cleanName, module.clean);
     }
   }
-
-
 
   gulp.task('default', [options.watchTaskName]);
 };

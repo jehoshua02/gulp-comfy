@@ -119,7 +119,7 @@ describe('gulp-comfy', function () {
       'default',
       'task1', 'task2', 'task3',
       'task3/a', 'task3/b', 'task3/c', 'task3/foo', 'task3/foo/bar',
-      'taskA', 'taskB', 'taskB:1', 'taskC_multi:0', 'taskC_multi:1', 'taskC_multi:named',
+      'taskA', 'taskB', 'taskB:1', 'taskC_multi', 'taskC_multi:0', 'taskC_multi:1', 'taskC_multi:named',
       'watch', 'watch/task2', 'watch/task3','watch/task3/a', 'watch/task3/b', 'watch/task3/c', 'watch:taskA'
     ]);
   });
@@ -165,6 +165,12 @@ describe('gulp-comfy', function () {
 
   describe('advanced gulp-comfy features', function() {
     process.chdir(__dirname + '/fixtures');
+
+    it('should register master tasks in task-files that return an array', function () {
+      gulp.tasks.should.have.properties(
+        'taskC_multi'
+      );
+    });
 
     it('should multiply tasks in task-files that return an array', function () {
       gulp.tasks.should.have.properties(
