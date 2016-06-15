@@ -1,6 +1,6 @@
 {
   "name": "gulp-comfy",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Boilerplate to make gulp as comfy as possible.",
   "main": "index.js",
   "scripts": {
@@ -9,12 +9,13 @@
   "author": "Joshua Stoutenburg <jehoshua02@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "gulp": "^3.8.10",
     "mocha": "^2.1.0",
     "should": "^4.6.5"
   },
   "dependencies": {
-    "del": "^1.1.1"
+    "del": "^1.1.1",
+    "gulp": "^3.8.10",
+    "gulp-watch": "^4.3.6"
   },
   "directories": {
     "test": "test"

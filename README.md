@@ -1,4 +1,4 @@
-# Gulp Comfy [![Build Status](https://travis-ci.org/jehoshua02/gulp-comfy.svg)](https://travis-ci.org/jehoshua02/gulp-comfy)
+# Gulp Comfy [![Build Status](https://travis-ci.org/chozilla/gulp-comfy.svg?branch=master)](https://travis-ci.org/chozilla/gulp-comfy)
 
 Boilerplate to make gulp as comfy as possible.
 
@@ -27,6 +27,32 @@ One line `gulpfile.js`:
 require('gulp-comfy')();
 ```
 
+
+### Optional Configuration
+
+`gulpfile.js`:
+
+```javascript
+require('gulp-comfy')({
+    taskPath: '/gulp/tasks',    //path to the task directory
+    taskFileExt: 'js',          //file extention of task files
+    taskSeparator: '/',         //seperator to concatinate sub-tasks
+    cleanTaskName: 'clean',     //name of the master-clean task
+    watchTaskName: 'watch',     //name of the master-watch task
+    cleanTaskPrefix: 'clean/',  //prefix of discovered cleaner tasks
+    watchTaskPrefix: 'watch/'   //prefix of discovered watcher tasks
+});
+```
+__Avalible Options__
+
++ __`taskPath`, String, Optional__: The path of where gulp-comfy will look for Task files. `default: 'gulp/tasks'`.
++ __`taskFileExt`, String, Optional__: The file extension task files need to be included. (all other files will be ignored!) `default: 'js'`.
++ __`taskSeparator`, String, Optional__: The separator used to concatenated task names discovered in directories `default: '/'`.
++ __`cleanTaskName`, String, Optional__: The name of the main cleaner task `default: 'clean'`.
++ __`watchTaskName`, String, Optional__: The name of the main watcher task `default: 'watch'`.
++ __`cleanTaskPrefix`, String, Optional__: The prefix for discovered clean tasks. `default: 'clean/'`.
++ __`watchTaskPrefix`, String, Optional__: The prefix for discovered watch tasks. `default: 'watch/'`.
+
 ## Tasks
 
 Define tasks in separate files under `gulp/tasks`. Instead of calling
@@ -37,14 +63,30 @@ module.exports = {
   // ... Task Properties ...
 };
 ```
+or define multiple tasks from one module in order to run different configurations:
+
+```javascript
+// file: xyz.js
+module.exports = [
+  {
+    // ... Task xyz/0 ...
+  },
+  {
+    name: 'production'
+    // ... Task xyz/production ...
+  }
+];
+```
 
 __Task Properties__
 
 + __`fn`, Function, Optional__: The function to pass to `gulp.task()`.
++ __`name`, String, Optional__: Only used when the module exports a array of tasks.
 + __`deps`, Array, Optional__: The array of task dependencies to pass to `gulp.task()`.
 + __`watch`, String|Array, Optional__: A glob or array of globs to pass to
-`gulp.watch()`. If specified a watch task will be defined automatically for this
+`gulp-watch` extension. If specified a watch task will be defined automatically for this
 task with the name of the task prefixed with `watch/`.
++ __`watchEvents`, Array, Optional__: A array of file activities to watch. default: `['add', 'change', 'unlink']` to watch creation, changes and deletion of files. This is an option to limit a watcher to certain actions.
 + __`clean`, String|Array, Optional__: A glob or array of globs to pass to
 [`del()`](https://www.npmjs.com/package/del). If specified a clean task will be
 defined automatically for this task with the name of the task prefixed with
