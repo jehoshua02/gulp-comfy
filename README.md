@@ -63,10 +63,25 @@ module.exports = {
   // ... Task Properties ...
 };
 ```
+or define multiple tasks from one module in order to run different configurations:
+
+```javascript
+// file: xyz.js
+module.exports = [
+  {
+    // ... Task xyz/0 ...
+  },
+  {
+    name: 'production'
+    // ... Task xyz/production ...
+  }
+];
+```
 
 __Task Properties__
 
 + __`fn`, Function, Optional__: The function to pass to `gulp.task()`.
++ __`name`, String, Optional__: Only used when the module exports a array of tasks.
 + __`deps`, Array, Optional__: The array of task dependencies to pass to `gulp.task()`.
 + __`watch`, String|Array, Optional__: A glob or array of globs to pass to
 `gulp-watch` extension. If specified a watch task will be defined automatically for this

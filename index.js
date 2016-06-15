@@ -110,9 +110,6 @@ module.exports = function (options) {
     var args = [name];
     
     if (module.deps) {
-      if(module.deps.indexOf('self') !== -1) {
-        module.deps[module.deps.indexOf('self')] = name;
-      }
       args.push(module.deps);
     }
     
