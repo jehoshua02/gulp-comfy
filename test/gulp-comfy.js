@@ -74,14 +74,6 @@ describe('gulp-comfy', function () {
     );
   });
 
-  describe('individual watch tasks', function () {
-    var task = gulp.tasks['watch/task3/a'];
-
-    it('should say what is being watched and which task', function () {
-      task.fn.toString().indexOf("name + ' (' + files + ')'").should.not.eql(-1);
-    });
-  });
-
   it('should define main watch task', function () {
     gulp.tasks.should.have.property('watch');
   });

@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 var fs = require('fs');
 var del = require('del');
-
+var watch = require('gulp-watch');
 
 module.exports = function (options) {
   var defaultOptions = {
@@ -13,7 +13,7 @@ module.exports = function (options) {
     cleanTaskName: 'clean',
     cleanTaskPrefix: 'clean/'
   };
-
+  
   if (typeof options == 'object') {
     for(var o in defaultOptions) {
       if(options[o] === undefined) {
@@ -24,13 +24,13 @@ module.exports = function (options) {
   } else {
     options = defaultOptions;
   }
-
+  
   const FILE_EXT = options.taskFileExt;
   const ROOT = process.cwd() + options.taskPath;
   const SEPARATOR = options.taskSeparator;
-
+  
   walkDirectory(null, ROOT);
-
+  
   function walkDirectory(parent,path) {
     var node = {
       name: path.replace(ROOT + '/', '').replace('/', SEPARATOR),
@@ -38,20 +38,20 @@ module.exports = function (options) {
       watches: [],
       cleans:[]
     };
-
+    
     fs.readdirSync(path).forEach(function(file) {
       var filepath = path + '/' + file;
-
+      
       if(fs.statSync(filepath).isFile() && filepath.lastIndexOf(FILE_EXT) == (filepath.length - FILE_EXT.length)) {
         registerFile(node, filepath);
       } else if (fs.statSync(filepath).isDirectory()) {
         walkDirectory(node,filepath)
       }
     });
-
+    
     registerNode(node, parent);
   }
-
+  
   function registerNode(node, parent) {
     if(parent) {
       if(node.childTasks.length > 0) {
@@ -66,7 +66,7 @@ module.exports = function (options) {
         gulp.task.apply(gulp, [options.cleanTaskPrefix + node.name, node.cleans]);
         parent.cleans.push(options.cleanTaskPrefix + node.name);
       }
-
+      
     } else {
       if(node.watches.length > 0) {
         gulp.task.apply(gulp, [options.watchTaskName, node.watches]);
@@ -76,18 +76,18 @@ module.exports = function (options) {
       }
     }
   }
-
+  
   function registerFile(node, path) {
     var module = require(path);
     var name = path.substr(0, path.lastIndexOf('.' + FILE_EXT)).replace(ROOT + '/', '').replace(/[/]/g, SEPARATOR);
-
+    
     if(module instanceof Array) {
       registerTaskArray(module, node, name)
     } else {
       createTask(module, node, name);
     }
   }
-
+  
   function registerTaskArray(tasks, parent, name) {
     var node = {
       name: name,
@@ -104,31 +104,38 @@ module.exports = function (options) {
     });
     registerNode(node, parent);
   }
-
-
+  
+  
   function createTask(module, node, name) {
     var args = [name];
-
+    
     if (module.deps) {
+      if(module.deps.indexOf('self') !== -1) {
+        module.deps[module.deps.indexOf('self')] = name;
+      }
       args.push(module.deps);
     }
-
+    
     if (module.fn) { args.push(module.fn); }
     gulp.task.apply(gulp, args);
-
+    
     node.childTasks.push(name);
-
+    
     if (module.watch) {
       var watchName = options.watchTaskPrefix + name;
       node.watches.push(watchName);
-      (function (name, files, task) { // closure to bind variables
-        gulp.task(name, [task], function () {
-          console.log(name + ' (' + files + ')');
-          gulp.watch(files, [task]);
+      // closure to bind variables
+      (function (watchName, files, taskName, events) { 
+        gulp.task(watchName, [taskName], function () {
+          events = events || ['add', 'change', 'unlink'];
+          console.log(watchName + '('+ files +')', events);
+          watch(files, {events: events}, function() {
+            gulp.start(taskName);
+          });
         });
-      })(watchName, module.watch, name);
+      })(watchName, module.watch, name, module.watchEvents);
     }
-
+    
     if (module.clean) {
       var cleanName = options.cleanTaskPrefix + name;
       node.cleans.push(cleanName);
@@ -139,6 +146,8 @@ module.exports = function (options) {
       })(cleanName, module.clean);
     }
   }
-
+  
+  
+  
   gulp.task('default', [options.watchTaskName]);
 };

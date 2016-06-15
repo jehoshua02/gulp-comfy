@@ -69,8 +69,9 @@ __Task Properties__
 + __`fn`, Function, Optional__: The function to pass to `gulp.task()`.
 + __`deps`, Array, Optional__: The array of task dependencies to pass to `gulp.task()`.
 + __`watch`, String|Array, Optional__: A glob or array of globs to pass to
-`gulp.watch()`. If specified a watch task will be defined automatically for this
+`gulp-watch` extension. If specified a watch task will be defined automatically for this
 task with the name of the task prefixed with `watch/`.
++ __`watchEvents`, Array, Optional__: A array of file activities to watch. default: `['add', 'change', 'unlink']` to watch creation, changes and deletion of files. This is an option to limit a watcher to certain actions.
 + __`clean`, String|Array, Optional__: A glob or array of globs to pass to
 [`del()`](https://www.npmjs.com/package/del). If specified a clean task will be
 defined automatically for this task with the name of the task prefixed with

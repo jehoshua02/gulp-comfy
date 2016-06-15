@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "del": "^1.1.1",
-    "gulp": "^3.8.10"
+    "gulp": "^3.8.10",
+    "gulp-watch": "^4.3.6"
   },
   "directories": {
     "test": "test"
